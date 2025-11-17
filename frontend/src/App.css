@@ -1,0 +1,7 @@
+@import './styles/shared.css';
+
+/* App-specific styles (if needed) */
+.App {
+  min-height: 100vh;
+  background-color: #ffffff;
+}
