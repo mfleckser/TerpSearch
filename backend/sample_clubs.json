@@ -1,0 +1,62 @@
+[
+  {
+    "name": "Computer Science Club",
+    "url": "https://example.com/cs-club",
+    "description": "A club for students interested in computer science and programming.",
+    "meeting_times": ["Monday Afternoon", "Thursday Evening"]
+  },
+  {
+    "name": "Outdoor Adventure Club",
+    "url": "https://example.com/outdoor-club",
+    "description": "Join us for hiking and outdoor activities!",
+    "meeting_times": ["Saturday Afternoon"]
+  },
+  {
+    "name": "Entrepreneurship Club",
+    "url": "https://example.com/entrepreneurship",
+    "description": "Learn about starting and growing businesses and startups.",
+    "meeting_times": ["Tuesday Evening", "Friday Afternoon"]
+  },
+  {
+    "name": "Jazz Band",
+    "url": "https://example.com/jazz-band",
+    "description": "Perform jazz music and enjoy improvisation with musicians.",
+    "meeting_times": ["Wednesday Evening", "Saturday Afternoon"]
+  },
+  {
+    "name": "Ultimate Frisbee Club",
+    "url": "https://example.com/ultimate-frisbee",
+    "description": "Competitive and recreational ultimate frisbee sports.",
+    "meeting_times": ["Tuesday Afternoon", "Friday Afternoon"]
+  },
+  {
+    "name": "Debate Club",
+    "url": "https://example.com/debate-club",
+    "description": "Improve your public speaking and argumentation skills.",
+    "meeting_times": ["Monday Evening", "Wednesday Evening"]
+  },
+  {
+    "name": "Photography Club",
+    "url": "https://example.com/photography",
+    "description": "Share and develop your photography skills and showcase visual art.",
+    "meeting_times": ["Thursday Afternoon", "Sunday Afternoon"]
+  },
+  {
+    "name": "Robotics Club",
+    "url": "https://example.com/robotics",
+    "description": "Build and compete with robots in engineering competitions.",
+    "meeting_times": ["Tuesday Evening", "Friday Evening"]
+  },
+  {
+    "name": "Dance Team",
+    "url": "https://example.com/dance",
+    "description": "Learn and perform various dance styles including hip-hop and contemporary.",
+    "meeting_times": ["Monday Evening", "Thursday Evening"]
+  },
+  {
+    "name": "Environmental Club",
+    "url": "https://example.com/environmental",
+    "description": "Work on sustainability and environmental projects for community outreach.",
+    "meeting_times": ["Wednesday Afternoon", "Sunday Afternoon"]
+  }
+]

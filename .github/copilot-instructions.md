@@ -21,21 +21,34 @@ The project is in early stages with only the frontend framework initialized.
 - **Target Title**: "Terp Search" (visible in browser tab, set in `public/index.html`)
 
 ### Backend (`/backend`)
-- **Framework**: Flask 3.0.0 with Python 3.8+
+- **Framework**: Flask 3.0.0 with SQLAlchemy 3.0.5 ORM
+- **Database**: SQLite (development, file: `clubs.db`), PostgreSQL-ready (production)
 - **Entry Point**: `app.py` - runs on `http://localhost:5000`
 - **CORS**: Configured to accept requests from `http://localhost:3000` (React frontend)
+- **Auto-Categorization**: ClubCategorizer utility automatically assigns categories based on club name and description
 - **Key Endpoints**:
-  - `POST /api/search` - Search clubs by keywords, categories, and availability
+  - `GET /api/health` - Health check
+  - `GET /api/categories` - Get list of all available club categories
+  - `POST /api/search` - Search clubs by keywords, categories, and availability (returns match scores 0-100)
   - `GET /api/clubs` - Get paginated list of all clubs
   - `GET /api/clubs/<id>` - Get detailed club information
-  - `GET /api/health` - Health check
 - **Structure**:
-  - `app.py` - Main Flask application with route definitions
-  - `models/` - Database models (to be implemented with SQLAlchemy)
-  - `routes/` - Route handlers (to be refactored from app.py)
-  - `utils/` - Search matching and utility functions
-  - `tests/` - Unit and integration tests
-- **Dependencies**: Flask, Flask-CORS, python-dotenv, pytest
+  - `app.py` - Main Flask application with SQLAlchemy integration, all route implementations, CLI commands
+  - `models/__init__.py` - SQLAlchemy models: Club and MeetingTime with relationships
+  - `config.py` - Environment-based configuration (Development/Production/Testing)
+  - `utils/search_engine.py` - ClubSearchEngine class with matching algorithm
+  - `utils/categorizer.py` - ClubCategorizer class for automatic club categorization
+  - `utils/db_seed.py` - DatabaseSeeder class supporting CSV/JSON/programmatic data import
+  - `tests/` - Unit and integration tests with pytest
+- **Dependencies**: Flask, Flask-CORS, Flask-SQLAlchemy 3.0.5, Flask-Migrate, python-dotenv, pytest
+- **CLI Commands**:
+  - `flask init-db` - Initialize database (create all tables)
+  - `flask seed-db` - Populate with 5 sample clubs (auto-categorized)
+  - `flask clear-db` - Delete all clubs and reset database
+- **Database Models**: 
+  - Club (name, url, description, category, meeting_times)
+  - MeetingTime (club_id FK, day_of_week, time_slot, meeting_description)
+- **Categories**: Academic, Music, Sports, Arts, Cultural, Social, Recreation, Greek Life, Other
 
 ### Scraping (`/scraping`)
 Currently empty. When implemented:
@@ -80,19 +93,42 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
+**Initialize database**:
+```bash
+flask init-db
+```
+
+**Seed with sample data**:
+```bash
+flask seed-db
+```
+
 **Start development server** (with auto-reload):
 ```bash
 cd backend && flask run --debug
 ```
 - Runs on `http://localhost:5000`
 - Auto-reloads on file changes
+- Database queries executed against SQLite or configured database
 
 **Run tests**:
 ```bash
 cd backend && pytest
 ```
 - Unit tests in `tests/` directory
-- Currently includes API endpoint tests
+- Tests use in-memory database
+
+**Import clubs from CSV/JSON**:
+```python
+from app import app
+from utils.db_seed import DatabaseSeeder
+
+with app.app_context():
+    # From CSV
+    DatabaseSeeder.seed_from_csv('sample_clubs.csv')
+    # From JSON
+    DatabaseSeeder.seed_from_json('sample_clubs.json')
+```
 
 **Test specific endpoint**:
 ```bash
@@ -102,6 +138,72 @@ curl -X POST http://localhost:5000/api/search \
 ```
 
 ## Code Structure Conventions
+
+### Database Schema (Backend)
+
+**Club Model** (`models/__init__.py`)
+```python
+class Club(db.Model):
+    id: int (primary key)
+    name: str (required, unique)
+    url: str (required)
+    description: str (required)
+    category: str (required, auto-categorized) - e.g., "Academic", "Music", "Sports"
+    meeting_times: relationship [MeetingTime] - one-to-many
+```
+
+**MeetingTime Model** (`models/__init__.py`)
+```python
+class MeetingTime(db.Model):
+    id: int (primary key)
+    club_id: int (foreign key to Club.id)
+    day_of_week: str (required) - e.g., "Monday", "Tuesday", ..., "Sunday"
+    time_slot: str (required) - e.g., "Morning", "Afternoon", "Evening"
+    meeting_description: str (optional) - additional details
+    # Unique constraint: (club_id, day_of_week, time_slot) prevents duplicates
+```
+
+**Auto-Categorization** (`utils/categorizer.py`)
+- **ClubCategorizer class** with keyword-based categorization
+- **Available Categories**: Academic, Music, Sports, Arts, Cultural, Social, Recreation, Greek Life, Other
+- **Process**: Analyzes club name + description, counts keyword matches, returns highest-scoring category
+- **Customization**: Easy to modify keywords in `CATEGORY_KEYWORDS` dictionary
+- See `CATEGORY_GUIDE.md` for how to modify categories
+
+**Search Algorithm** (`utils/search_engine.py`)
+- **Match Score (0-100):** 
+  - Keyword matching (40 pts): 30 pts for name match, 10 pts for description match
+  - Category filter (40 pts): 40 pts if club category matches any requested category
+  - Availability overlap (20 pts): Proportional based on availability matches
+- **Time Format:** Frontend sends "Monday-Afternoon" → backend parses to day_of_week="Monday", time_slot="Afternoon"
+- **Query Logic:** 
+  1. Filter clubs by keyword match (ILIKE case-insensitive on name + description)
+  2. Filter by selected categories (if any)
+  3. Calculate match score for each club
+  4. Sort by score descending
+  5. Return paginated results with scores attached
+
+**Data Import Formats** (`utils/db_seed.py`)
+
+CSV Format (categories auto-assigned):
+```csv
+name,url,description,meeting_times
+Computer Science Club,https://csclub.umd.edu,Learn to code together,"Monday Afternoon,Wednesday Evening"
+```
+
+JSON Format (categories auto-assigned):
+```json
+[
+  {
+    "name": "Computer Science Club",
+    "url": "https://csclub.umd.edu",
+    "description": "Learn to code together",
+    "meeting_times": ["Monday Afternoon", "Wednesday Evening"]
+  }
+]
+```
+
+**Meeting Time Parsing:** Converts strings like "Monday Afternoon" to {day_of_week: "Monday", time_slot: "Afternoon"} using pattern matching in db_seed.py
 
 ### React Component Patterns
 - Use functional components (React 19+)
@@ -159,13 +261,40 @@ npm start
 
 ## Next Steps for New Contributors
 
-1. **Expand App.js**: Build initial feature (search interface, results display, etc.)
-2. **Add styles**: Populate `App.css` or introduce component-level CSS
-3. **Implement backend**: Define tech stack and API contract
-4. **Implement scraping**: Define data sources and pipeline
-5. **Document patterns**: Update this file as new conventions emerge
+1. ✅ Frontend scaffolding complete - search interface and results display implemented
+2. ✅ Backend API with database fully implemented - all 5 endpoints functional with SQLAlchemy
+3. ✅ Database schema complete - Club and MeetingTime models with relationships
+4. ✅ Search algorithm complete - 0-100 scoring based on keyword + category + availability
+5. ✅ Data import utilities - CSV, JSON, and programmatic seeding supported
+6. ✅ Test suite - 8 comprehensive test cases with proper fixtures
+7. ⏳ Next: Web scraping module (use DatabaseSeeder to import data when ready)
+8. ⏳ Next: Advanced features (user accounts, favorites, notifications)
+9. ⏳ Next: Deployment configuration (Heroku, AWS, Docker)
+
+## Immediate Setup
+
+To get the app running:
+
+1. **Backend setup**:
+   ```bash
+   cd backend && pip install -r requirements.txt
+   flask init-db
+   flask seed-db
+   flask run --debug
+   ```
+
+2. **Frontend setup** (in a new terminal):
+   ```bash
+   cd frontend && npm install
+   npm start
+   ```
+
+3. **Run tests**:
+   ```bash
+   cd backend && pytest tests/test_api.py
+   ```
 
 ---
 
 **Last updated**: November 2025  
-**Status**: Framework initialized, feature development in progress
+**Status**: Core features complete (frontend, backend, database, search, seeding); ready for scraping integration and advanced features
