@@ -1,0 +1,15 @@
+{
+  "name": "terpsearch-backend",
+  "version": "1.0.0",
+  "description": "Backend server for TerpSearch - UMD club search application",
+  "main": "app.py",
+  "scripts": {
+    "start": "flask run",
+    "dev": "flask run --debug",
+    "test": "pytest"
+  },
+  "keywords": ["flask", "api", "clubs", "search"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {}
+}

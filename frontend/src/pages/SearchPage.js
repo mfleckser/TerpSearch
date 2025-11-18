@@ -5,8 +5,8 @@ import Header from '../components/Header';
 function SearchPage({ onSearch }) {
   const [formData, setFormData] = useState({
     keywords: '',
-    category: '',
-    interests: [],
+    categories: [],
+    availability: [],
   });
 
   const handleSubmit = (e) => {

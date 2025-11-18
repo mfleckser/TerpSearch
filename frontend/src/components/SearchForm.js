@@ -1,8 +1,8 @@
 import React from 'react';
+import './SearchForm.css';
 
 function SearchForm({ formData, setFormData, onSubmit }) {
   const categories = [
-    'All Categories',
     'Music',
     'Sports',
     'Academic',
@@ -13,31 +13,29 @@ function SearchForm({ formData, setFormData, onSubmit }) {
     'Religious',
   ];
 
-  const interestOptions = [
-    'Leadership',
-    'Community Service',
-    'Competitive',
-    'Casual',
-    'Networking',
-    'Recreation',
-    'Arts',
-    'STEM',
-  ];
+  const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  const timeSlots = ['Afternoon', 'Evening', 'Night'];
 
   const handleKeywordsChange = (e) => {
     setFormData({ ...formData, keywords: e.target.value });
   };
 
-  const handleCategoryChange = (e) => {
-    setFormData({ ...formData, category: e.target.value });
-  };
-
-  const handleInterestsToggle = (interest) => {
+  const handleCategoryToggle = (category) => {
     setFormData((prev) => ({
       ...prev,
-      interests: prev.interests.includes(interest)
-        ? prev.interests.filter((i) => i !== interest)
-        : [...prev.interests, interest],
+      categories: prev.categories.includes(category)
+        ? prev.categories.filter((c) => c !== category)
+        : [...prev.categories, category],
+    }));
+  };
+
+  const handleTimeAvailabilityToggle = (day, timeSlot) => {
+    const key = `${day}-${timeSlot}`;
+    setFormData((prev) => ({
+      ...prev,
+      availability: prev.availability.includes(key)
+        ? prev.availability.filter((a) => a !== key)
+        : [...prev.availability, key],
     }));
   };
 
@@ -50,41 +48,59 @@ function SearchForm({ formData, setFormData, onSubmit }) {
           type="text"
           id="keywords"
           placeholder="e.g., coding, dance, environmental..."
-          value={formData.keywords}
+          value={formData.keywords || ''}
           onChange={handleKeywordsChange}
         />
       </div>
 
-      {/* Category Dropdown */}
+      {/* Categories Multi-Select */}
       <div className="form-group">
-        <label htmlFor="category">Category</label>
-        <select
-          id="category"
-          value={formData.category}
-          onChange={handleCategoryChange}
-        >
-          {categories.map((cat) => (
-            <option key={cat} value={cat === 'All Categories' ? '' : cat}>
-              {cat}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {/* Interests Multi-Select */}
-      <div className="form-group">
-        <label>Interests</label>
-        <div className="interests-container">
-          {interestOptions.map((interest) => (
-            <label key={interest} className="interest-checkbox">
+        <label>Club Categories</label>
+        <div className="categories-container">
+          {categories.map((category) => (
+            <label key={category} className="category-checkbox">
               <input
                 type="checkbox"
-                checked={formData.interests.includes(interest)}
-                onChange={() => handleInterestsToggle(interest)}
+                checked={formData.categories?.includes(category) || false}
+                onChange={() => handleCategoryToggle(category)}
               />
-              <span className="interest-label">{interest}</span>
+              <span className="category-label">{category}</span>
             </label>
           ))}
+        </div>
+      </div>
+
+      {/* Time Availability */}
+      <div className="form-group">
+        <label>Time Availability</label>
+        <p className="time-subtitle">Select when you're available to attend meetings</p>
+        <div className="availability-grid">
+          {daysOfWeek.map((day) => (
+            <div key={day} className="day-column">
+              <div className="day-header">{day.slice(0, 3)}</div>
+              <div className="time-slots">
+                {timeSlots.map((timeSlot) => {
+                  const key = `${day}-${timeSlot}`;
+                  const isSelected = formData.availability?.includes(key) || false;
+                  return (
+                    <label key={key} className={`time-slot ${isSelected ? 'selected' : ''}`}>
+                      <input
+                        type="checkbox"
+                        checked={isSelected}
+                        onChange={() => handleTimeAvailabilityToggle(day, timeSlot)}
+                      />
+                      <span className="time-label">{timeSlot.slice(0, 1)}</span>
+                    </label>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="time-legend">
+          <span><strong>A</strong> = Afternoon</span>
+          <span><strong>E</strong> = Evening</span>
+          <span><strong>N</strong> = Night</span>
         </div>
       </div>
 
