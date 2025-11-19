@@ -26,10 +26,10 @@ class DatabaseSeeder:
     }
 
     TIME_SLOT_PATTERNS = {
+        'morning': 'Morning',
         'afternoon': 'Afternoon',
         'evening': 'Evening',
         'night': 'Night',
-        'morning': 'Afternoon',  # Map morning to afternoon for now
     }
 
     @staticmethod
@@ -41,10 +41,11 @@ class DatabaseSeeder:
         [
             {
                 "name": "Club Name",
-                "url": "https://...",
-                "description": "...",
-                "meeting_times": ["Monday Afternoon", "Thursday Evening"],
-                "category": "Academic"  # Optional
+                "website_url": "https://...",
+                "picture_id": "pic.jpg",
+                "summary": "Club description...",
+                "categories": "Category Name",
+                "meeting_times": ["Monday Morning", "Thursday Afternoon"]
             }
         ]
         """
@@ -69,22 +70,29 @@ class DatabaseSeeder:
         """
         Seed database from CSV file
         
-        Expected columns:
-        name, url, description, meeting_times, category
-        (meeting_times should be semicolon-separated for multiple times)
+        Supports two formats:
+        1. TerpLink CSV: Name, WebsiteKey, ProfilePicture, Summary, CategoryNames, MeetingTimes
+        2. Simple CSV: name, website_url, picture_id, summary, categories, timing
         """
         try:
+            import csv as csv_module
             with open(csv_file, 'r', encoding='utf-8') as f:
-                reader = csv.DictReader(f)
+                reader = csv_module.DictReader(f)
                 count = 0
                 
                 for row in reader:
+                    # Handle both CSV formats
                     club_data = {
-                        'name': row.get('name'),
-                        'url': row.get('url'),
-                        'description': row.get('description'),
-                        'meeting_times': row.get('meeting_times', '').split(';') if row.get('meeting_times') else [],
-                        'category': row.get('category')
+                        'name': row.get('Name') or row.get('name'),
+                        'website_url': row.get('WebsiteKey') or row.get('website_url'),
+                        'picture_id': row.get('ProfilePicture') or row.get('picture_id'),
+                        'summary': row.get('Summary') or row.get('summary'),
+                        'categories': DatabaseSeeder._parse_categories(
+                            row.get('CategoryNames') or row.get('categories')
+                        ),
+                        'meeting_times': DatabaseSeeder._parse_meeting_times(
+                            row.get('MeetingTimes') or row.get('timing')
+                        )
                     }
                     count += DatabaseSeeder._add_club(club_data)
                 
@@ -94,7 +102,81 @@ class DatabaseSeeder:
         except Exception as e:
             db.session.rollback()
             print(f"✗ Error seeding from CSV: {e}")
+            import traceback
+            traceback.print_exc()
             return 0
+
+    @staticmethod
+    def _parse_categories(categories_str):
+        """
+        Parse categories from various formats
+        - List format: "['Category1', 'Category2']"
+        - Semicolon format: "Category1;Category2"
+        - Comma format: "Category1, Category2"
+        Returns comma-separated string
+        """
+        if not categories_str:
+            return ''
+        
+        cat_str = str(categories_str).strip()
+        categories = []
+        
+        # Handle list format: "['Category1', 'Category2']"
+        if cat_str.startswith('[') and cat_str.endswith(']'):
+            import ast
+            try:
+                cat_list = ast.literal_eval(cat_str)
+                categories = cat_list if isinstance(cat_list, list) else [cat_str]
+            except:
+                # If parsing fails, treat as regular string
+                categories = [cat_str]
+        # Handle semicolon-separated format
+        elif ';' in cat_str:
+            categories = [c.strip() for c in cat_str.split(';')]
+        # Handle comma-separated format
+        elif ',' in cat_str:
+            categories = [c.strip() for c in cat_str.split(',')]
+        # Handle single value
+        else:
+            categories = [cat_str]
+        
+        # Filter out empty strings and join with commas
+        return ', '.join([c for c in categories if c])
+
+    @staticmethod
+    def _parse_meeting_times(meeting_times_str):
+        """
+        Parse meeting times from various formats
+        - List format: "['Monday Evening', 'Tuesday Morning']"
+        - Semicolon format: "Monday Evening;Tuesday Morning"
+        - Regular string: "Monday Evening, Tuesday Morning"
+        """
+        if not meeting_times_str:
+            return []
+        
+        meeting_str = str(meeting_times_str).strip()
+        times = []
+        
+        # Handle list format: "['Monday Evening', 'Tuesday Morning']"
+        if meeting_str.startswith('[') and meeting_str.endswith(']'):
+            import ast
+            try:
+                times_list = ast.literal_eval(meeting_str)
+                times = times_list if isinstance(times_list, list) else [meeting_str]
+            except:
+                # If parsing fails, treat as regular string
+                times = [meeting_str]
+        # Handle semicolon-separated format
+        elif ';' in meeting_str:
+            times = [t.strip() for t in meeting_str.split(';')]
+        # Handle comma-separated format
+        elif ',' in meeting_str:
+            times = [t.strip() for t in meeting_str.split(',')]
+        # Handle single value
+        else:
+            times = [meeting_str]
+        
+        return [t for t in times if t]  # Filter out empty strings
 
     @staticmethod
     def seed_from_data(clubs_data):
@@ -120,43 +202,43 @@ class DatabaseSeeder:
     @staticmethod
     def _add_club(club_data):
         """
-        Add a single club to the database with auto-categorization
+        Add a single club to the database
         
         Returns: 1 if successful, 0 if club already exists
         """
         try:
             name = club_data.get('name')
-            url = club_data.get('url')
-            description = club_data.get('description')
+            website_url = club_data.get('website_url') or club_data.get('url')
+            picture_id = club_data.get('picture_id')
+            summary = club_data.get('summary') or club_data.get('description', '')
+            categories = club_data.get('categories', '')
             
             # Skip if club already exists
             if Club.query.filter_by(name=name).first():
                 print(f"⊘ Club '{name}' already exists, skipping")
                 return 0
             
-            # Auto-categorize the club based on name and description
-            category = club_data.get('category') or ClubCategorizer.categorize(name, description)
-            
             # Create club object
             club = Club(
                 name=name,
-                url=url,
-                description=description,
-                category=category
+                website_url=website_url,
+                picture_id=picture_id,
+                summary=summary,
+                categories=categories
             )
             
             db.session.add(club)
             db.session.flush()  # Get the club ID
             
             # Add meeting times
-            meeting_times = club_data.get('meeting_times', [])
+            meeting_times = club_data.get('meeting_times') or club_data.get('timing', [])
             if isinstance(meeting_times, str):
                 meeting_times = [meeting_times]
             
             for meeting_str in meeting_times:
                 DatabaseSeeder._add_meeting_time(club.id, meeting_str)
             
-            print(f"✓ Added club: {name} ({category})")
+            print(f"✓ Added club: {name}")
             return 1
         except Exception as e:
             print(f"✗ Error adding club: {e}")
@@ -217,7 +299,7 @@ class DatabaseSeeder:
         """Get database statistics"""
         total_clubs = Club.query.count()
         total_meeting_times = MeetingTime.query.count()
-        categories = db.session.query(Club.category, db.func.count(Club.id)).group_by(Club.category).all()
+        categories = db.session.query(Club.categories, db.func.count(Club.id)).group_by(Club.categories).all()
         
         return {
             'total_clubs': total_clubs,

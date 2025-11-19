@@ -1,11 +1,11 @@
-name,url,description,meeting_times
-Computer Science Club,https://example.com/cs-club,A club for students interested in computer science and programming.,Monday Afternoon;Thursday Evening
-Outdoor Adventure Club,https://example.com/outdoor-club,Join us for hiking and outdoor activities!,Saturday Afternoon
-Entrepreneurship Club,https://example.com/entrepreneurship,Learn about starting and growing businesses and startups.,Tuesday Evening;Friday Afternoon
-Jazz Band,https://example.com/jazz-band,Perform jazz music and enjoy improvisation with musicians.,Wednesday Evening;Saturday Afternoon
-Ultimate Frisbee Club,https://example.com/ultimate-frisbee,Competitive and recreational ultimate frisbee sports.,Tuesday Afternoon;Friday Afternoon
-Debate Club,https://example.com/debate-club,Improve your public speaking and argumentation skills.,Monday Evening;Wednesday Evening
-Photography Club,https://example.com/photography,Share and develop your photography skills and showcase visual art.,Thursday Afternoon;Sunday Afternoon
-Robotics Club,https://example.com/robotics,Build and compete with robots in engineering competitions.,Tuesday Evening;Friday Evening
-Dance Team,https://example.com/dance,Learn and perform various dance styles including hip-hop and contemporary.,Monday Evening;Thursday Evening
-Environmental Club,https://example.com/environmental,Work on sustainability and environmental projects for community outreach.,Wednesday Afternoon;Sunday Afternoon
+name,website_url,picture_id,summary,categories,timing
+Computer Science Club,https://example.com/cs-club,cs-club-pic.jpg,A club for students interested in computer science and programming.,Science and Technology,Monday Morning;Thursday Afternoon
+Outdoor Adventure Club,https://example.com/outdoor-club,outdoor-club-pic.jpg,Join us for hiking and outdoor activities!,Sports and Recreation,Saturday Afternoon
+Entrepreneurship Club,https://example.com/entrepreneurship,entrepreneur-pic.jpg,Learn about starting and growing businesses and startups.,Business and Entrepreneurship,Tuesday Evening;Friday Morning
+Jazz Band,https://example.com/jazz-band,jazz-band-pic.jpg,Perform jazz music and enjoy improvisation with musicians.,Creative and Performing Arts,Wednesday Evening;Saturday Afternoon
+Ultimate Frisbee Club,https://example.com/ultimate-frisbee,frisbee-club-pic.jpg,Competitive and recreational ultimate frisbee sports.,Sports and Recreation,Tuesday Morning;Friday Afternoon
+Debate Club,https://example.com/debate-club,debate-club-pic.jpg,Improve your public speaking and argumentation skills.,Academic and Pre-Professional,Monday Evening;Wednesday Evening
+Photography Club,https://example.com/photography,photo-club-pic.jpg,Share and develop your photography skills and showcase visual art.,Creative and Performing Arts,Thursday Morning;Sunday Afternoon
+Robotics Club,https://example.com/robotics,robotics-club-pic.jpg,Build and compete with robots in engineering competitions.,Science and Technology,Tuesday Evening;Friday Evening
+Dance Team,https://example.com/dance,dance-team-pic.jpg,Learn and perform various dance styles including hip-hop and contemporary.,Creative and Performing Arts,Monday Evening;Thursday Afternoon
+Environmental Club,https://example.com/environmental,env-club-pic.jpg,Work on sustainability and environmental projects for community outreach.,Activism/Advocacy/Awareness,Wednesday Morning;Sunday Afternoon

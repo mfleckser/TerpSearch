@@ -161,7 +161,7 @@ CREATE TABLE meeting_times (
   id INTEGER PRIMARY KEY,
   club_id INTEGER NOT NULL FOREIGN KEY,
   day_of_week TEXT NOT NULL,        -- 'Monday', 'Tuesday', etc.
-  time_slot TEXT NOT NULL,           -- 'Afternoon', 'Evening', 'Night'
+  time_slot TEXT NOT NULL,           -- 'Morning', 'Afternoon', 'Evening', 'Night'
   meeting_description TEXT,
   UNIQUE(club_id, day_of_week, time_slot)
 );
@@ -171,21 +171,23 @@ CREATE TABLE meeting_times (
 
 ### CSV Format
 ```csv
-name,url,description,meeting_times,category
-Club Name,https://...,Description here,Monday Afternoon;Thursday Evening,Academic
+name,website_url,picture_id,summary,categories,timing
+Club Name,https://...,pic.jpg,Description here,Category Name,Monday Morning;Thursday Afternoon
 ```
-- `meeting_times` should be semicolon-separated for multiple times
+- `timing` should be semicolon-separated for multiple times
 - Headers must match exactly
+- `categories` should be comma-separated if multiple categories
 
 ### JSON Format
 ```json
 [
   {
     "name": "Club Name",
-    "url": "https://...",
-    "description": "Description here",
-    "category": "Academic",
-    "meeting_times": ["Monday Afternoon", "Thursday Evening"]
+    "website_url": "https://...",
+    "picture_id": "pic.jpg",
+    "summary": "Description here",
+    "categories": "Category Name",
+    "meeting_times": ["Monday Morning", "Thursday Afternoon"]
   }
 ]
 ```
@@ -193,8 +195,8 @@ Club Name,https://...,Description here,Monday Afternoon;Thursday Evening,Academi
 ## Search Algorithm
 
 Match scores are calculated (0-100) based on:
-- **Keyword matching** (40 points): Name matches worth more than description matches
-- **Category matching** (40 points): Club category matches user selection
+- **Keyword matching** (40 points): Name matches worth more than summary matches
+- **Category matching** (40 points): Club categories match user selection
 - **Availability matching** (20 points): Club meeting times overlap with user availability
 
 Results are sorted by match score in descending order.

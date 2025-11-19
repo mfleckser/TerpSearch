@@ -35,11 +35,22 @@ def health_check():
 
 @app.route('/api/categories', methods=['GET'])
 def get_categories():
-    """Get list of all available club categories"""
+    """Get list of all unique categories from clubs in the database"""
     try:
-        from utils.categorizer import ClubCategorizer
-        categories = ClubCategorizer.get_category_list()
-        return jsonify({'categories': categories}), 200
+        # Get all unique categories from clubs
+        # Categories are comma-separated strings, so we need to extract and deduplicate
+        all_clubs = Club.query.all()
+        unique_categories = set()
+        
+        for club in all_clubs:
+            if club.categories:
+                # Split comma-separated categories and add to set
+                categories_list = [cat.strip() for cat in club.categories.split(',')]
+                unique_categories.update(categories_list)
+        
+        # Return sorted list of categories
+        categories_list = sorted(list(unique_categories))
+        return jsonify({'categories': categories_list}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -155,54 +166,68 @@ def init_db():
 
 @app.cli.command()
 def seed_db():
-    """Seed database with sample data"""
+    """Seed database with club data from CSV"""
     from utils.db_seed import DatabaseSeeder
+    import os
     
     with app.app_context():
-        # Sample data
-        sample_clubs = [
-            {
-                'name': 'Computer Science Club',
-                'url': 'https://example.com/cs-club',
-                'description': 'A club for students interested in computer science and programming.',
-                'meeting_times': ['Monday Afternoon', 'Thursday Evening']
-            },
-            {
-                'name': 'Outdoor Adventure Club',
-                'url': 'https://example.com/outdoor-club',
-                'description': 'Join us for hiking, camping, and outdoor activities!',
-                'meeting_times': ['Saturday Afternoon']
-            },
-            {
-                'name': 'Entrepreneurship Club',
-                'url': 'https://example.com/entrepreneurship',
-                'description': 'Learn about starting and growing businesses and startups.',
-                'meeting_times': ['Tuesday Evening', 'Friday Afternoon']
-            },
-            {
-                'name': 'Jazz Band',
-                'url': 'https://example.com/jazz-band',
-                'description': 'Perform jazz music and enjoy improvisation with fellow musicians.',
-                'meeting_times': ['Wednesday Evening', 'Saturday Afternoon']
-            },
-            {
-                'name': 'Ultimate Frisbee Club',
-                'url': 'https://example.com/ultimate-frisbee',
-                'description': 'Competitive and recreational ultimate frisbee sports.',
-                'meeting_times': ['Tuesday Afternoon', 'Friday Afternoon']
-            }
-        ]
+        # Try to load from clubs.csv in the scraping folder
+        csv_path = os.path.join(os.path.dirname(__file__), '..', 'scraping', 'clubs.csv')
         
-        DatabaseSeeder.seed_from_data(sample_clubs)
+        if os.path.exists(csv_path):
+            print(f"🔄 Loading clubs from {csv_path}...")
+            DatabaseSeeder.seed_from_csv(csv_path)
+        else:
+            print(f"⚠ clubs.csv not found at {csv_path}")
+            print("📋 Using sample data instead...")
+            
+            # Fallback to sample data
+            sample_clubs = [
+                {
+                    'name': 'Computer Science Club',
+                    'website_url': 'https://example.com/cs-club',
+                    'picture_id': 'cs-club-pic.jpg',
+                    'summary': 'A club for students interested in computer science and programming.',
+                    'categories': 'Science and Technology',
+                    'meeting_times': ['Monday Morning', 'Thursday Afternoon']
+                },
+                {
+                    'name': 'Outdoor Adventure Club',
+                    'website_url': 'https://example.com/outdoor-club',
+                    'picture_id': 'outdoor-club-pic.jpg',
+                    'summary': 'Join us for hiking and outdoor activities!',
+                    'categories': 'Sports and Recreation',
+                    'meeting_times': ['Saturday Afternoon']
+                },
+                {
+                    'name': 'Entrepreneurship Club',
+                    'website_url': 'https://example.com/entrepreneurship',
+                    'picture_id': 'entrepreneur-pic.jpg',
+                    'summary': 'Learn about starting and growing businesses and startups.',
+                    'categories': 'Business and Entrepreneurship',
+                    'meeting_times': ['Tuesday Evening', 'Friday Morning']
+                },
+                {
+                    'name': 'Jazz Band',
+                    'website_url': 'https://example.com/jazz-band',
+                    'picture_id': 'jazz-band-pic.jpg',
+                    'summary': 'Perform jazz music and enjoy improvisation with musicians.',
+                    'categories': 'Creative and Performing Arts',
+                    'meeting_times': ['Wednesday Evening', 'Saturday Afternoon']
+                },
+                {
+                    'name': 'Ultimate Frisbee Club',
+                    'website_url': 'https://example.com/ultimate-frisbee',
+                    'picture_id': 'frisbee-club-pic.jpg',
+                    'summary': 'Competitive and recreational ultimate frisbee sports.',
+                    'categories': 'Sports and Recreation',
+                    'meeting_times': ['Tuesday Morning', 'Friday Afternoon']
+                }
+            ]
+            DatabaseSeeder.seed_from_data(sample_clubs)
+        
         stats = DatabaseSeeder.get_stats()
-        print(f"\nDatabase stats: {stats}")
-        
-        # Print auto-categorized clubs
-        from models import Club
-        clubs = Club.query.all()
-        print("\nAuto-categorized clubs:")
-        for club in clubs:
-            print(f"  • {club.name}: {club.category}")
+        print(f"\n📊 Database stats: {stats}")
 
 
 @app.cli.command()
@@ -216,10 +241,19 @@ def clear_db():
             DatabaseSeeder.clear_all()
         else:
             print("✓ Cancelled")
-        if confirm.lower() == 'yes':
-            DatabaseSeeder.clear_all()
-        else:
-            print("✓ Cancelled")
+
+
+@app.cli.command()
+def vectorize_clubs():
+    """Pre-compute and store embeddings for all club summaries"""
+    from utils.embedding_cache import vectorize_all_clubs
+    
+    result = vectorize_all_clubs(app)
+    
+    if result['status'] == 'success':
+        print(f"\n✓ {result['message']}")
+    else:
+        print(f"\n✗ {result['message']}")
 
 # ==================== MAIN ====================
 

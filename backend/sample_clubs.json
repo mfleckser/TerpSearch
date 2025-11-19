@@ -1,62 +1,42 @@
 [
   {
     "name": "Computer Science Club",
-    "url": "https://example.com/cs-club",
-    "description": "A club for students interested in computer science and programming.",
-    "meeting_times": ["Monday Afternoon", "Thursday Evening"]
+    "website_url": "https://example.com/cs-club",
+    "picture_id": "cs-club-pic.jpg",
+    "summary": "A club for students interested in computer science and programming.",
+    "categories": "Science and Technology",
+    "meeting_times": ["Monday Morning", "Thursday Afternoon"]
   },
   {
     "name": "Outdoor Adventure Club",
-    "url": "https://example.com/outdoor-club",
-    "description": "Join us for hiking and outdoor activities!",
+    "website_url": "https://example.com/outdoor-club",
+    "picture_id": "outdoor-club-pic.jpg",
+    "summary": "Join us for hiking and outdoor activities!",
+    "categories": "Sports and Recreation",
     "meeting_times": ["Saturday Afternoon"]
   },
   {
     "name": "Entrepreneurship Club",
-    "url": "https://example.com/entrepreneurship",
-    "description": "Learn about starting and growing businesses and startups.",
-    "meeting_times": ["Tuesday Evening", "Friday Afternoon"]
+    "website_url": "https://example.com/entrepreneurship",
+    "picture_id": "entrepreneur-pic.jpg",
+    "summary": "Learn about starting and growing businesses and startups.",
+    "categories": "Business and Entrepreneurship",
+    "meeting_times": ["Tuesday Evening", "Friday Morning"]
   },
   {
     "name": "Jazz Band",
-    "url": "https://example.com/jazz-band",
-    "description": "Perform jazz music and enjoy improvisation with musicians.",
+    "website_url": "https://example.com/jazz-band",
+    "picture_id": "jazz-band-pic.jpg",
+    "summary": "Perform jazz music and enjoy improvisation with musicians.",
+    "categories": "Creative and Performing Arts",
     "meeting_times": ["Wednesday Evening", "Saturday Afternoon"]
   },
   {
     "name": "Ultimate Frisbee Club",
-    "url": "https://example.com/ultimate-frisbee",
-    "description": "Competitive and recreational ultimate frisbee sports.",
-    "meeting_times": ["Tuesday Afternoon", "Friday Afternoon"]
-  },
-  {
-    "name": "Debate Club",
-    "url": "https://example.com/debate-club",
-    "description": "Improve your public speaking and argumentation skills.",
-    "meeting_times": ["Monday Evening", "Wednesday Evening"]
-  },
-  {
-    "name": "Photography Club",
-    "url": "https://example.com/photography",
-    "description": "Share and develop your photography skills and showcase visual art.",
-    "meeting_times": ["Thursday Afternoon", "Sunday Afternoon"]
-  },
-  {
-    "name": "Robotics Club",
-    "url": "https://example.com/robotics",
-    "description": "Build and compete with robots in engineering competitions.",
-    "meeting_times": ["Tuesday Evening", "Friday Evening"]
-  },
-  {
-    "name": "Dance Team",
-    "url": "https://example.com/dance",
-    "description": "Learn and perform various dance styles including hip-hop and contemporary.",
-    "meeting_times": ["Monday Evening", "Thursday Evening"]
-  },
-  {
-    "name": "Environmental Club",
-    "url": "https://example.com/environmental",
-    "description": "Work on sustainability and environmental projects for community outreach.",
-    "meeting_times": ["Wednesday Afternoon", "Sunday Afternoon"]
+    "website_url": "https://example.com/ultimate-frisbee",
+    "picture_id": "frisbee-club-pic.jpg",
+    "summary": "Competitive and recreational ultimate frisbee sports.",
+    "categories": "Sports and Recreation",
+    "meeting_times": ["Tuesday Morning", "Friday Afternoon"]
   }
 ]

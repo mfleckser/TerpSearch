@@ -9,46 +9,95 @@ class ClubCategorizer:
     
     # Define category keywords (customize as needed)
     CATEGORY_KEYWORDS = {
-        'Academic': [
-            'coding', 'programming', 'computer', 'science', 'engineering', 'math',
-            'physics', 'chemistry', 'biology', 'business', 'economics', 'research',
-            'debate', 'case competition', 'consulting', 'entrepreneurship', 'startup',
-            'analytics', 'data', 'statistics'
+        'Science and Technology': [
+            'coding', 'programming', 'computer', 'science', 'engineering', 'tech',
+            'technology', 'software', 'hardware', 'ai', 'machine learning', 'data',
+            'robotics', 'research', 'physics', 'chemistry', 'biology', 'stem'
         ],
-        'Music': [
-            'music', 'band', 'orchestra', 'jazz', 'choir', 'singing', 'instrument',
-            'performance', 'musician', 'acoustic', 'electric', 'vocal', 'symphony',
-            'rock', 'pop', 'classical'
+        'Social Fraternity/Sorority': [
+            'fraternity', 'sorority', 'greek', 'frat', 'brotherhood', 'sisterhood',
+            'pledge', 'greek life', 'social fraternity', 'social sorority'
         ],
-        'Sports': [
+        'Business and Entrepreneurship': [
+            'business', 'entrepreneurship', 'startup', 'consulting', 'consulting',
+            'economics', 'finance', 'accounting', 'marketing', 'sales', 'case competition',
+            'investment', 'trading', 'venture'
+        ],
+        'Cultural/Ethnic': [
+            'cultural', 'international', 'language', 'spanish', 'chinese', 'arabic',
+            'french', 'german', 'korean', 'japanese', 'indian', 'african', 'heritage',
+            'community', 'ethnic', 'diaspora', 'asia', 'latin', 'caribbean', 'cultural'
+        ],
+        'Military': [
+            'military', 'rotc', 'army', 'navy', 'air force', 'marine', 'veteran',
+            'armed forces', 'defense'
+        ],
+        'Academic and Pre-Professional': [
+            'debate', 'argumentation', 'public speaking', 'mock trial', 'model un',
+            'prelaw', 'pre-law', 'pre-med', 'premed', 'pre-dental', 'predental',
+            'academic competition', 'scholarship'
+        ],
+        'Activism/Advocacy/Awareness': [
+            'activism', 'advocacy', 'awareness', 'social justice', 'environment',
+            'sustainability', 'sustainability', 'climate', 'conservation', 'volunteer',
+            'volunteering', 'charity', 'outreach', 'community service', 'mental health'
+        ],
+        'Sports and Recreation': [
             'sports', 'soccer', 'basketball', 'football', 'tennis', 'baseball',
             'volleyball', 'lacrosse', 'crew', 'rowing', 'swimming', 'rugby',
             'frisbee', 'ultimate', 'athletic', 'fitness', 'yoga', 'martial arts',
-            'track', 'wrestling', 'golf', 'climbing'
+            'track', 'wrestling', 'golf', 'climbing', 'skateboard', 'snowboard',
+            'hiking', 'camping', 'outdoor', 'adventure', 'recreation', 'bike',
+            'running', 'cycling', 'dance'
         ],
-        'Arts': [
+        'Creative and Performing Arts': [
             'art', 'drawing', 'painting', 'sculpture', 'design', 'photography',
             'film', 'theater', 'drama', 'dance', 'visual', 'creative', 'animation',
-            'graphic', 'crafts', 'pottery', 'performance'
+            'graphic', 'crafts', 'pottery', 'performance', 'music', 'band', 'orchestra',
+            'jazz', 'choir', 'singing', 'instrument', 'musician', 'acoustic', 'electric',
+            'vocal', 'symphony', 'rock', 'pop', 'classical'
         ],
-        'Cultural': [
-            'cultural', 'international', 'language', 'spanish', 'chinese', 'arabic',
-            'french', 'german', 'korean', 'japanese', 'indian', 'african', 'heritage',
-            'community', 'ethnic', 'diaspora', 'asia', 'latin', 'caribbean'
+        'Academic/College': [
+            'academic', 'college', 'engineering', 'nursing', 'agriculture', 'architecture'
         ],
-        'Social': [
-            'social', 'community service', 'volunteering', 'volunteer', 'charity',
-            'social justice', 'activism', 'environment', 'sustainability', 'outreach',
-            'mentoring', 'support group', 'network', 'professional'
+        'College - Business (SUSA)': [
+            'business school', 'mba', 'accounting', 'finance', 'management', 'commerce'
         ],
-        'Recreation': [
-            'outdoor', 'adventure', 'hiking', 'camping', 'climbing', 'kayaking',
-            'board games', 'tabletop', 'gaming', 'rpg', 'recreation', 'hobby',
-            'travel', 'exploration', 'adventure', 'nature'
+        'Professional': [
+            'professional', 'career', 'networking', 'conference', 'mentor', 'mentorship',
+            'professional development', 'alumni'
         ],
-        'Greek Life': [
-            'fraternity', 'sorority', 'greek', 'frat', 'brotherhood',
-            'sisterhood', 'pledge', 'greek life'
+        'Health and Wellness': [
+            'health', 'wellness', 'fitness', 'medical', 'nursing', 'psychology',
+            'mental health', 'counseling', 'therapy', 'nutrition', 'exercise',
+            'meditation', 'mindfulness', 'yoga'
+        ],
+        'Political': [
+            'political', 'politics', 'campaign', 'government', 'policy', 'congress',
+            'senate', 'democrats', 'republicans', 'conservative', 'liberal', 'independent'
+        ],
+        'Service': [
+            'service', 'volunteer', 'community', 'outreach', 'charity', 'humanitarian',
+            'relief', 'food bank', 'tutoring', 'mentoring'
+        ],
+        'Media/Publications': [
+            'media', 'publication', 'journalism', 'newspaper', 'magazine', 'yearbook',
+            'podcast', 'broadcast', 'radio', 'television', 'tv', 'film', 'video',
+            'photography', 'news', 'editor', 'writer', 'reporter'
+        ],
+        'Religious/Spiritual': [
+            'religious', 'spiritual', 'faith', 'church', 'synagogue', 'mosque',
+            'temple', 'christian', 'catholic', 'jewish', 'muslim', 'hindu', 'buddhist',
+            'interfaith', 'chaplain', 'ministry', 'worship', 'prayer', 'bible', 'quran'
+        ],
+        'E-Sports and Gaming': [
+            'esports', 'gaming', 'video games', 'game', 'competitive gaming', 'tournament',
+            'twitch', 'streaming', 'discord', 'league of legends', 'valorant', 'overwatch',
+            'minecraft', 'dota', 'fortnite', 'gaming'
+        ],
+        'Honorary/Honor Society': [
+            'honor', 'honorary', 'honor society', 'honors', 'prestigious', 'excellence',
+            'scholarship', 'academic honors'
         ]
     }
     
@@ -82,4 +131,4 @@ class ClubCategorizer:
     @staticmethod
     def get_category_list():
         """Return all available categories"""
-        return list(ClubCategorizer.CATEGORY_KEYWORDS.keys()) + ['Other']
+        return list(ClubCategorizer.CATEGORY_KEYWORDS.keys())
