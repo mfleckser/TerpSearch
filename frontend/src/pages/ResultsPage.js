@@ -22,6 +22,7 @@ function ResultsPage({ searchQuery, clubs, loading, onBack }) {
 
         {loading ? (
           <div className="loading">
+            <div className="spinner"></div>
             <p>Loading clubs...</p>
           </div>
         ) : clubs.length > 0 ? (

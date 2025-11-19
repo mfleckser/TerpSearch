@@ -3,18 +3,29 @@ import './SearchForm.css';
 
 function SearchForm({ formData, setFormData, onSubmit }) {
   const categories = [
-    'Music',
-    'Sports',
-    'Academic',
-    'Social',
-    'Greek Life',
+    'Science and Technology',
+    'Social Fraternity/Sorority',
+    'Business and Entrepreneurship',
+    'Cultural/Ethnic',
+    'Military',
+    'Academic and Pre-Professional',
+    'Activism/Advocacy/Awareness',
+    'Sports and Recreation',
+    'Creative and Performing Arts',
+    'Academic/College',
+    'College - Business (SUSA)',
+    'Professional',
+    'Health and Wellness',
+    'Political',
     'Service',
-    'Cultural',
-    'Religious',
+    'Media/Publications',
+    'Religious/Spiritual',
+    'E-Sports and Gaming',
+    'Honorary/Honor Society',
   ];
 
   const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-  const timeSlots = ['Afternoon', 'Evening', 'Night'];
+  const timeSlots = ['Morning', 'Afternoon', 'Evening', 'Night'];
 
   const handleKeywordsChange = (e) => {
     setFormData({ ...formData, keywords: e.target.value });
@@ -98,6 +109,7 @@ function SearchForm({ formData, setFormData, onSubmit }) {
           ))}
         </div>
         <div className="time-legend">
+          <span><strong>M</strong> = Morning</span>
           <span><strong>A</strong> = Afternoon</span>
           <span><strong>E</strong> = Evening</span>
           <span><strong>N</strong> = Night</span>

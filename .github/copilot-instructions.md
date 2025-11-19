@@ -147,8 +147,10 @@ class Club(db.Model):
     id: int (primary key)
     name: str (required, unique)
     url: str (required)
-    description: str (required)
-    category: str (required, auto-categorized) - e.g., "Academic", "Music", "Sports"
+    website_url: str (required)
+    picture_id: str (optional) - reference to club image
+    summary: str (required)
+    categories: str (required) - category names (comma-separated if multiple)
     meeting_times: relationship [MeetingTime] - one-to-many
 ```
 
@@ -158,16 +160,10 @@ class MeetingTime(db.Model):
     id: int (primary key)
     club_id: int (foreign key to Club.id)
     day_of_week: str (required) - e.g., "Monday", "Tuesday", ..., "Sunday"
-    time_slot: str (required) - e.g., "Morning", "Afternoon", "Evening"
+    time_slot: str (required) - e.g., "Morning", "Afternoon", "Evening", "Night"
     meeting_description: str (optional) - additional details
     # Unique constraint: (club_id, day_of_week, time_slot) prevents duplicates
 ```
-
-**Auto-Categorization** (`utils/categorizer.py`)
-- **ClubCategorizer class** with keyword-based categorization
-- **Available Categories**: Academic, Music, Sports, Arts, Cultural, Social, Recreation, Greek Life, Other
-- **Process**: Analyzes club name + description, counts keyword matches, returns highest-scoring category
-- **Customization**: Easy to modify keywords in `CATEGORY_KEYWORDS` dictionary
 - See `CATEGORY_GUIDE.md` for how to modify categories
 
 **Search Algorithm** (`utils/search_engine.py`)

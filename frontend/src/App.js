@@ -8,13 +8,13 @@ import { useClubSearch } from './hooks/useClubSearch';
 function App() {
   const [currentPage, setCurrentPage] = useState('search'); // 'search' or 'results'
   const [searchQuery, setSearchQuery] = useState(null);
-  const { clubs, loading, error, search } = useClubSearch();
+    const { clubs, loading, error, search } = useClubSearch();
 
   const handleSearch = async (query) => {
     setSearchQuery(query);
     // Call the useClubSearch hook to fetch clubs
-    await search(query);
     setCurrentPage('results');
+    await search(query);
   };
 
   const handleBackToSearch = () => {
